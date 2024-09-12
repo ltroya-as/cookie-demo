@@ -1,21 +1,22 @@
-import Cookies from 'universal-cookie'
+import Cookies from 'js-cookie'
 import { parse as parseCookie } from 'cookie-es'
 
 const CONSENT_KEY = 'cookie-accepted'
 
 export default defineNuxtPlugin({
     name: 'cookies',
+
     setup() {
-        const cookieManager = new Cookies(null, {path: '/', expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)})
+        const DEFAULT_COOKIE_OPTIONS = {path: '/', expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)}
 
         const cookies = {
             getCookieValue(key: string) {
                 if (import.meta.server) {
                     const req = useRequestHeaders()
-                    return parseCookie(req.cookie)[key] ?? undefined
+                    return parseCookie(req.cookie || "")[key] ?? undefined
                 }
 
-                return cookieManager.get(key)
+                return Cookies.get(key)
             },
 
             get(key: string) {
@@ -35,7 +36,7 @@ export default defineNuxtPlugin({
                     cookieValue = JSON.stringify(value)
                 }
 
-                cookieManager.set(key, cookieValue)
+                Cookies.set(key, cookieValue, DEFAULT_COOKIE_OPTIONS)
             },
         }
 
