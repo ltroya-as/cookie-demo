@@ -16,14 +16,14 @@ export default defineNuxtPlugin({
                     return parseCookie(req.cookie || "")[key] ?? undefined
                 }
 
-                return Cookies.get(key)
+                // return Cookies.get(key)
             },
 
             get(key: string) {
                 const cookieValue = this.getCookieValue(key)
 
                 try {
-                    return JSON.parse(cookieValue)
+                    return JSON.parse(cookieValue || "")
                 } catch {
                     return cookieValue
                 }
